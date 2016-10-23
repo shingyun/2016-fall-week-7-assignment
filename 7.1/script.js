@@ -26,21 +26,13 @@ d3.queue()
 
         //Draw axis
 
-        scaleY = d3.scaleLinear()
+   scaleY = d3.scaleLinear()
             .domain([0,120])
             .range([h,0]);
-        scaleX = d3.scaleLinear()
+   scaleX = d3.scaleLinear()
             .domain([0,4])
             .range([0,w]);
 
-        var axisY = d3.axisLeft()
-            .scale(scaleY)
-            .tickSize(-w-200);
-
-        plot.append('g')
-            .attr('class','axis axis-y')
-            .attr('transform','translate(-100,0)')
-            .call(axisY);
 
         //Step 2: implement the code to switch between three datasets
         d3.select('#year-1900').on('click', function(){
@@ -56,7 +48,7 @@ d3.queue()
     });
 
 //Step 3: implement the enter / exit / update pattern
-function draw(rows){
+    function draw(rows){
     var top5 = rows.sort(function(a,b){
         return b.count - a.count;
     }).slice(0,5);
@@ -98,6 +90,16 @@ function draw(rows){
 
     text.merge(textEnter)
         .text(function(d){return d.country});
+
+    //draw axis
+    var axisY = d3.axisLeft()
+            .scale(scaleY)
+            .tickSize(-w-200);
+
+    plot.append('g')
+            .attr('class','axis axis-y')
+            .attr('transform','translate(-100,0)')
+            .call(axisY);
 
 }
 
