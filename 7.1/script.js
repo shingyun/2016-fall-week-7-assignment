@@ -48,6 +48,58 @@ d3.queue()
     });
 
 //Step 3: implement the enter / exit / update pattern
+function draw(rows){
+    var top5 = rows.sort(function(a,b){
+        return b.count - a.count;
+    }).slice(0,5);
+
+    console.table(top5);
+    //Update
+    var update=plot.selectAll('.country')
+      .data(top5,function(d){return d.country});
+    //Enter
+    var enter=update.enter()
+      .append('g')
+      .attr('class','country')
+      .attr('transform',function(d,i){
+        return 'translate('+scaleX(i)+','+'0)'});
+
+    enter.append('rect')
+         .attr('x',0)
+         .attr('width',30)
+         .attr('y',function(d){return scaleY(d.count)})
+         .attr('height',function(d){return h-scaleY(d.count)});
+    
+    enter.append('text')
+         .text(function(d){return d.country})
+         .attr('y',function(d){return h+20})
+         .attr('text-anchor','middle');
+
+    update.exit().remove();
+
+    //Update
+    enter.merge(update)
+          .transition()
+          .duration(1000)
+          .attr('transform',function(d,i){
+            return 'translate('+scaleX(i)+','+'0)'})
+          .select('rect')
+          .attr('y',function(d){return scaleY(d.count)})
+          .attr('height',function(d){return h-scaleY(d.count)});
+
+        //draw axis
+    var axisY = d3.axisLeft()
+            .scale(scaleY)
+            .tickSize(-w-200);
+
+    plot.append('g')
+            .attr('class','axis axis-y')
+            .attr('transform','translate(-100,0)')
+            .call(axisY);
+
+}
+
+/*//Step 3: implement the enter / exit / update pattern
     function draw(rows){
     var top5 = rows.sort(function(a,b){
         return b.count - a.count;
@@ -57,7 +109,7 @@ d3.queue()
 
     //Represent: nodes
     var bars = plot.selectAll('rect')
-          .data(top5);//Update
+          .data(top5,function(d){return top5.country});//Update
 
     var text = plot.selectAll('.countryText')
           .data(top5);
@@ -101,7 +153,7 @@ d3.queue()
             .attr('transform','translate(-100,0)')
             .call(axisY);
 
-}
+}*/
 
 function parse(d){
     return {
